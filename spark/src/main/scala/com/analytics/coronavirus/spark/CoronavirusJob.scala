@@ -23,11 +23,11 @@ object CoronavirusJob {
       .csv(csvData)
   }
 
-  def buildSparkSession(runLocal: String): SparkSession = {
+  def buildSparkSession(runLocal: Boolean): SparkSession = {
     var ssBuilder = SparkSession.builder()
       .appName("Coronavirus Job")
 
-    if (!runLocal.isEmpty) {
+    if (runLocal) {
       ssBuilder = ssBuilder.master("local[*]")
     }
 
@@ -36,14 +36,14 @@ object CoronavirusJob {
 
   def main(args: Array[String]) {
     if (args.length < 3) {
-      System.err.println("Usage: CoronavirusJob <confirmed_csv> <deaths_csv> <output_path> [<run_local=true|false>]")
+      System.err.println("Usage: CoronavirusJob <confirmed_csv> <deaths_csv> <output_path> [<run_local>]")
       System.exit(1)
     }
 
     val confirmedUrl = args(0)
     val deathsUrl = args(1)
     val outputPath = args(2)
-    val runLocal = args(3)
+    val runLocal: Boolean = args.length >= 4
 
     val spark = buildSparkSession(runLocal)
 
@@ -51,10 +51,10 @@ object CoronavirusJob {
     val deathsDf = readCsvFromUrl(spark, deathsUrl)
 
     val results = new CoronavirusQuery(spark).run(confirmedDf, deathsDf)
-    results.write
-      .mode(SaveMode.Overwrite)
-      .option("header", value = true)
-      .csv(outputPath)
+//    results.write
+//      .mode(SaveMode.Overwrite)
+//      .option("header", value = true)
+//      .csv(outputPath)
   }
 
 }

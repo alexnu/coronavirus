@@ -1,0 +1,46 @@
+{
+  "type": "index_parallel",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "covid",
+      "timestampSpec": {
+        "column": "date"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "country_region",
+          "province_state"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "type": "longSum",
+          "name": "confirmed",
+          "fieldName": "confirmed"
+        },
+        {
+          "type": "longSum",
+          "name": "deaths",
+          "fieldName": "deaths"
+        }
+      ],
+      "granularitySpec": {
+        "segmentGranularity": "ALL",
+        "queryGranularity": "DAY"
+      }
+    },
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "local",
+        "baseDir": "/tmp/filesystem/data_out",
+        "filter": "*.csv"
+      },
+      "inputFormat": {
+        "type": "csv",
+        "findColumnsFromHeader": true
+      },
+      "appendToExisting": false
+    }
+  }
+}
