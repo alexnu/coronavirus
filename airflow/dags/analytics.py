@@ -25,7 +25,7 @@ spark_command = """
 /usr/local/airflow/dags/spark.jar \
 https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv \
 https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv \
-/tmp/filesystem/data_out
+/tmp/filesystem/spark_out
 """
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators

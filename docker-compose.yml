@@ -2,7 +2,6 @@ version: '3.7'
 
 volumes:
   database: {}
-  filesystem: {}
   storage: {}
 
 services:
@@ -30,7 +29,7 @@ services:
       - AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG=1
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
     volumes:
-      - filesystem:/tmp/filesystem
+      - ./.filesystem:/tmp/filesystem
     ports:
       - "8080:8080"
     command: webserver
@@ -47,7 +46,7 @@ services:
         DRUID_VERSION: 0.17.1
     volumes:
       - storage:/var/druid/segments
-      - filesystem:/tmp/filesystem
+      - ./.filesystem:/tmp/filesystem
     ports:
       - "8888:8888"
 

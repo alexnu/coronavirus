@@ -33,7 +33,7 @@
       "type": "index_parallel",
       "inputSource": {
         "type": "local",
-        "baseDir": "/tmp/filesystem/data_out",
+        "baseDir": "/tmp/filesystem/spark_out",
         "filter": "*.csv"
       },
       "inputFormat": {
