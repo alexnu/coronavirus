@@ -1,11 +1,10 @@
 package com.analytics.coronavirus.spark
 
 import org.apache.spark.rdd.RDD
-
-import scala.io.Source._
 import org.apache.spark.sql.{DataFrame, Dataset, SaveMode, SparkSession}
 
 import scala.io.BufferedSource
+import scala.io.Source._
 
 object CoronavirusJob {
 
@@ -50,11 +49,10 @@ object CoronavirusJob {
     val confirmedDf = readCsvFromUrl(spark, confirmedUrl)
     val deathsDf = readCsvFromUrl(spark, deathsUrl)
 
-    val results = new CoronavirusQuery(spark).run(confirmedDf, deathsDf)
-//    results.write
-//      .mode(SaveMode.Overwrite)
-//      .option("header", value = true)
-//      .csv(outputPath)
+    new CoronavirusQuery(spark).run(confirmedDf, deathsDf)
+      .write
+      .mode(SaveMode.Overwrite)
+      .option("header", value = true)
+      .csv(outputPath)
   }
-
 }

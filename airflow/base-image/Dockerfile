@@ -12,11 +12,15 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=1.10.9
+ARG AIRFLOW_VERSION=1.10.10
 ARG AIRFLOW_USER_HOME=/usr/local/airflow
 ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
+
+# JAVA
+ARG OPENJDK_VERSION=8
+ARG SPARK_VERSION=2.4.5
 
 # Define en_US.
 ENV LANGUAGE en_US.UTF-8
@@ -59,8 +63,6 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
-# airflow bug when installing druid dependency
-    && pip install pydruid==0.5.8 \
     && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install 'redis==3.2' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
@@ -80,23 +82,21 @@ COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
-# for 1.10.10 we can just start from the published image and only add this section
-
+# Install java
 RUN echo "deb http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
-RUN mkdir -p /usr/share/man/man1 && \
-    apt-get update -y && \
-    apt-get install -y openjdk-8-jdk
+RUN mkdir -p /usr/share/man/man1 \
+    && apt-get update -y \
+    && apt-get install -y openjdk-${OPENJDK_VERSION}-jdk
 
-RUN apt-get install unzip -y && \
-    apt-get autoremove -y
+RUN apt-get install unzip -y \
+    && apt-get autoremove -y
 
+# Install spark
 RUN apt-get install -y wget \
-    && wget https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz \
-    && tar -xvzf spark-2.4.5-bin-hadoop2.7.tgz \
-    && mv spark-2.4.5-bin-hadoop2.7 spark \
-    && rm spark-2.4.5-bin-hadoop2.7.tgz
-
-# up to here
+    && wget https://downloads.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz \
+    && tar -xvzf spark-${SPARK_VERSION}-bin-hadoop2.7.tgz \
+    && mv spark-${SPARK_VERSION}-bin-hadoop2.7 spark \
+    && rm spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
 
 EXPOSE 8080 5555 8793
 

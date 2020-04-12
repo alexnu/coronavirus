@@ -1,6 +1,6 @@
 FROM openjdk:8
 
-ENV DRUID_VERSION 0.17.1
+ARG DRUID_VERSION=0.17.1
 
 # Get Druid
 RUN mkdir -p /tmp \
@@ -24,4 +24,4 @@ EXPOSE 8083
 EXPOSE 8090
 EXPOSE 2181 2888 3888
 
-ENTRYPOINT ./bin/start-nano-quickstart
+ENTRYPOINT DRUID_SKIP_JAVA_CHECK=1 ./bin/start-nano-quickstart
