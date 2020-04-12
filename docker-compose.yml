@@ -19,8 +19,7 @@ services:
   airflow:
     build:
       context: .
-      args:
-        AIRFLOW_DEPS: "druid"
+      dockerfile: Dockerfile.airflow
     restart: always
     depends_on:
       - postgres
