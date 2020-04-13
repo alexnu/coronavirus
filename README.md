@@ -1,5 +1,5 @@
 # Coronavirus Dashboard
-A simple analytics pipeline for SARS-CoV-2, built with Airflow, Spark, Druid and [Turnilo](https://github.com/allegro/turnilo), powered by Johns Hopkins [dataset](https://github.com/CSSEGISandData/COVID-19).
+A simple analytics pipeline for SARS-CoV-2, built with [Airflow](https://github.com/apache/airflow), [Spark](https://github.com/apache/spark), [Druid](https://github.com/apache/druid) and [Turnilo](https://github.com/allegro/turnilo), powered by Johns Hopkins [dataset](https://github.com/CSSEGISandData/COVID-19).
 
 ## Usage
 First, we need to start all services (this may take a while for the images to download the first time):
