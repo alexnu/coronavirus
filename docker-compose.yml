@@ -28,7 +28,11 @@ services:
       - PYTHONDONTWRITEBYTECODE=y
       - AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG=1
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+      - AIRFLOW_CONN_DRUID_INGEST=http://druid:8081?endpoint=druid%2Findexer%2Fv1%2Ftask
     volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/plugins:/usr/local/airflow/plugins
+      - ./spark/target/scala-2.11/coronavirus-spark_2.11-1.0.jar:/usr/local/airflow/deps/spark.jar
       - ./.filesystem:/tmp/filesystem
     ports:
       - "8080:8080"

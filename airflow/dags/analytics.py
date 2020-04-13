@@ -22,7 +22,7 @@ spark_command = """
 /spark/bin/spark-submit \
 --class com.analytics.coronavirus.spark.CoronavirusJob \
 --master "local[*]" \
-/usr/local/airflow/dags/spark.jar \
+/usr/local/airflow/deps/spark.jar \
 https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv \
 https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv \
 /tmp/filesystem/spark_out
