@@ -18,7 +18,7 @@ clusters:
 
     # Should the sources of this cluster be automatically scanned and new
     # sources added as data cubes. Default: <code>auto</code>
-    sourceListScan: auto
+    sourceListScan: disable
 
     # Should the list of sources be reloaded every time that Turnilo is
     # loaded. This will put additional load on the data store but will ensure that
@@ -43,7 +43,7 @@ clusters:
 
 dataCubes:
   - name: covid
-    title: covid
+    title: Covid-19
     clusterName: druid
     source: covid
     # The refresh rule describes how often the data cube looks for new data. Default: 'query'/PT1M (every minute)
@@ -82,7 +82,7 @@ dataCubes:
     # * autofill-dimensions-only - Introspect the datasource, automatically generate dimensions only
     # * autofill-measures-only - Introspect the datasource, automatically generate measures only
     # * autofill-all - (default) Introspect the datasource, automatically generate dimensions and measures
-    introspection: autofill-all
+    introspection: none
 
     # The list of attribute overrides in case introspection get something wrong
     attributeOverrides:
