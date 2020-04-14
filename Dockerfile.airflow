@@ -1,6 +1,6 @@
 FROM mozilla/sbt:8u232_1.3.8
 COPY spark /spark
-RUN cd /spark && sbt package
+RUN cd /spark && sbt clean package
 
 FROM alexnu/airflow-spark-druid:1.10.10
 COPY airflow/dags /usr/local/airflow/dags
