@@ -3,6 +3,7 @@ version: '3.7'
 volumes:
   database: {}
   storage: {}
+  filesystem: {}
 
 services:
   postgres:
@@ -33,7 +34,7 @@ services:
       - ./airflow/dags:/usr/local/airflow/dags
       - ./airflow/plugins:/usr/local/airflow/plugins
       - ./spark/target/scala-2.11/coronavirus-spark_2.11-1.0.jar:/usr/local/airflow/deps/spark.jar
-      - ./.filesystem:/tmp/filesystem
+      - filesystem:/tmp/filesystem
     ports:
       - "8080:8080"
     command: webserver
@@ -50,7 +51,7 @@ services:
         DRUID_VERSION: 0.17.1
     volumes:
       - storage:/var/druid/segments
-      - ./.filesystem:/tmp/filesystem
+      - filesystem:/tmp/filesystem
     ports:
       - "8888:8888"
 
