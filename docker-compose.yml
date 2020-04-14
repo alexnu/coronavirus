@@ -33,7 +33,6 @@ services:
     volumes:
       - ./airflow/dags:/usr/local/airflow/dags
       - ./airflow/plugins:/usr/local/airflow/plugins
-      - ./spark/target/scala-2.11/coronavirus-spark_2.11-1.0.jar:/usr/local/airflow/deps/spark.jar
       - filesystem:/tmp/filesystem
     ports:
       - "8080:8080"
