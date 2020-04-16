@@ -22,29 +22,20 @@ object CoronavirusJob {
       .csv(csvData)
   }
 
-  def buildSparkSession(runLocal: Boolean): SparkSession = {
-    var ssBuilder = SparkSession.builder()
-      .appName("Coronavirus Job")
-
-    if (runLocal) {
-      ssBuilder = ssBuilder.master("local[*]")
-    }
-
-    ssBuilder.getOrCreate()
-  }
-
   def main(args: Array[String]) {
-    if (args.length < 3) {
-      System.err.println("Usage: CoronavirusJob <confirmed_csv> <deaths_csv> <output_path> [<run_local>]")
+    if (args.length != 3) {
+      System.err.println("Usage: CoronavirusJob <confirmed_csv> <deaths_csv> <output_path>")
       System.exit(1)
     }
+
+    val spark = SparkSession.builder()
+      .appName("Coronavirus Job")
+      .master("local")
+      .getOrCreate()
 
     val confirmedUrl = args(0)
     val deathsUrl = args(1)
     val outputPath = args(2)
-    val runLocal: Boolean = args.length >= 4
-
-    val spark = buildSparkSession(runLocal)
 
     val confirmedDf = readCsvFromUrl(spark, confirmedUrl)
     val deathsDf = readCsvFromUrl(spark, deathsUrl)
