@@ -12,7 +12,7 @@ class CoronavirusQuery(spark: SparkSession) {
 
   val excludedCols: List[String] = List("Province/State", "Country/Region", "Lat", "Long")
 
-  private def unpivotDF(df: DataFrame, colName: String): DataFrame = {
+  private def unpivot(df: DataFrame, newColName: String): DataFrame = {
     val datesDf: DataFrame = df.schema.names
       .filter(col => !excludedCols.contains(col)).toList
       .toDF("date_str")
@@ -27,13 +27,13 @@ class CoronavirusQuery(spark: SparkSession) {
       $"Province/State".as("province_state"),
       $"Country/Region".as("country_region"),
       to_date($"date_str", "MM/dd/yy").as("date"),
-      evaluateCol($"date_str", array(df_expanded_colNames.map(col): _*)).as(colName)
+      evaluateCol($"date_str", array(df_expanded_colNames.map(col): _*)).as(newColName)
     )
   }
 
   def run(confirmed: DataFrame, deaths: DataFrame): DataFrame = {
-    val confirmed_unpivot = unpivotDF(confirmed, "confirmed_cum")
-    val deaths_unpivot = unpivotDF(deaths, "deaths_cum")
+    val confirmed_unpivot = unpivot(confirmed, "confirmed_cum")
+    val deaths_unpivot = unpivot(deaths, "deaths_cum")
 
     val windowSpec = Window.partitionBy("country_region", "province_state").orderBy("date")
     confirmed_unpivot.as("cu")
