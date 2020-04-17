@@ -20,14 +20,14 @@ class CoronavirusQuery(spark: SparkSession) {
     val df_expanded = df.crossJoin(datesDf)
     val df_expanded_colNames = df_expanded.columns
 
-    def evaluateCol =
+    def selectCol =
       udf((colName: String, array: mutable.WrappedArray[String]) => array(df_expanded_colNames.indexOf(colName)))
 
     df_expanded.select(
       $"Province/State".as("province_state"),
       $"Country/Region".as("country_region"),
       to_date($"date_str", "MM/dd/yy").as("date"),
-      evaluateCol($"date_str", array(df_expanded_colNames.map(col): _*)).as(newColName)
+      selectCol($"date_str", array(df_expanded_colNames.map(i => col(i)): _*)).as(newColName)
     )
   }
 
@@ -36,6 +36,7 @@ class CoronavirusQuery(spark: SparkSession) {
     val deaths_unpivot = unpivot(deaths, "deaths_cum")
 
     val windowSpec = Window.partitionBy("country_region", "province_state").orderBy("date")
+
     confirmed_unpivot.as("cu")
       .join(deaths_unpivot.as("du"),
         $"cu.date" === $"du.date" &&
@@ -59,6 +60,14 @@ class CoronavirusQuery(spark: SparkSession) {
       ))
       .withColumn("confirmed", $"confirmed_cum".minus($"confirmed_prev"))
       .withColumn("deaths", $"deaths_cum".minus($"deaths_prev"))
+      .select(
+        $"date",
+        $"country_region",
+        $"province_state",
+        $"confirmed",
+        $"deaths"
+      )
       .orderBy("date", "country_region", "province_state")
   }
+
 }

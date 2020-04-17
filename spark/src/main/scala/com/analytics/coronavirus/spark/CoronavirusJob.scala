@@ -1,26 +1,12 @@
 package com.analytics.coronavirus.spark
 
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Dataset, SaveMode, SparkSession}
+import com.analytics.coronavirus.spark.CsvManager.readCsvFromSource
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 import scala.io.BufferedSource
 import scala.io.Source._
 
 object CoronavirusJob {
-
-  def readCsvFromUrl(spark: SparkSession, url: String): DataFrame = {
-    import spark.implicits._
-
-    val urlSource: BufferedSource = fromURL(url)
-    val csvList: List[String] = urlSource.mkString.stripMargin.lines.toList
-    urlSource.close()
-    val rdd: RDD[String] = spark.sparkContext.parallelize(csvList)
-    val csvData: Dataset[String] = rdd.toDS()
-    spark.read
-      .option("header", value = true)
-      .option("inferSchema", value = true)
-      .csv(csvData)
-  }
 
   def main(args: Array[String]) {
     if (args.length != 3) {
@@ -37,10 +23,14 @@ object CoronavirusJob {
     val deathsUrl = args(1)
     val outputPath = args(2)
 
-    val confirmedDf = readCsvFromUrl(spark, confirmedUrl)
-    val deathsDf = readCsvFromUrl(spark, deathsUrl)
+    val confirmedSource: BufferedSource = fromURL(confirmedUrl)
+    val deathsSource: BufferedSource = fromURL(deathsUrl)
 
-    new CoronavirusQuery(spark).run(confirmedDf, deathsDf)
+    val confirmedDf = readCsvFromSource(spark, confirmedSource)
+    val deathsDf = readCsvFromSource(spark, deathsSource)
+
+    new CoronavirusQuery(spark)
+      .run(confirmedDf, deathsDf)
       .write
       .mode(SaveMode.Overwrite)
       .option("header", value = true)
