@@ -2,7 +2,7 @@ package com.analytics.coronavirus.spark
 
 import com.analytics.coronavirus.spark.CsvManager.readCsvFromSource
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
-import org.apache.spark.sql.types.{DateType, DoubleType, IntegerType, LongType, StringType, StructField, StructType}
+import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 
 import scala.io.BufferedSource

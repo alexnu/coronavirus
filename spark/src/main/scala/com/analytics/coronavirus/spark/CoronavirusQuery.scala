@@ -21,7 +21,7 @@ class CoronavirusQuery(spark: SparkSession) {
     val df_expanded_colNames = df_expanded.columns
 
     def selectCol =
-      udf((colName: String, array: mutable.WrappedArray[String]) => array(df_expanded_colNames.indexOf(colName)))
+      udf((colName: String, cols: mutable.WrappedArray[String]) => cols(df_expanded_colNames.indexOf(colName)))
 
     df_expanded.select(
       $"Province/State".as("province_state"),
@@ -35,7 +35,9 @@ class CoronavirusQuery(spark: SparkSession) {
     val confirmed_unpivot = unpivot(confirmed, "confirmed_cum")
     val deaths_unpivot = unpivot(deaths, "deaths_cum")
 
-    val windowSpec = Window.partitionBy("country_region", "province_state").orderBy("date")
+    val windowSpec = Window
+      .partitionBy("country_region", "province_state")
+      .orderBy("date")
 
     confirmed_unpivot.as("cu")
       .join(deaths_unpivot.as("du"),

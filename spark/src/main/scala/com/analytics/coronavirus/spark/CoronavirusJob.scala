@@ -10,7 +10,7 @@ object CoronavirusJob {
 
   def main(args: Array[String]) {
     if (args.length != 3) {
-      System.err.println("Usage: CoronavirusJob <confirmed_csv> <deaths_csv> <output_path>")
+      System.err.println("Usage: CoronavirusJob <confirmed_url> <deaths_url> <output_path>")
       System.exit(1)
     }
 

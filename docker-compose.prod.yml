@@ -3,6 +3,7 @@ version: '3.7'
 volumes:
   database: {}
   storage: {}
+  filesystem: {}
 
 services:
   postgres:
@@ -30,9 +31,7 @@ services:
       - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
       - AIRFLOW_CONN_DRUID_INGEST=http://druid:8081?endpoint=druid%2Findexer%2Fv1%2Ftask
     volumes:
-      - ./airflow/dags:/usr/local/airflow/dags
-      - ./airflow/plugins:/usr/local/airflow/plugins
-      - ./.filesystem:/tmp/filesystem
+      - filesystem:/tmp/filesystem
     ports:
       - "8080:8080"
     command: webserver
@@ -49,7 +48,7 @@ services:
         DRUID_VERSION: 0.17.1
     volumes:
       - storage:/var/druid/segments
-      - ./.filesystem:/tmp/filesystem
+      - filesystem:/tmp/filesystem
     ports:
       - "8888:8888"
 
