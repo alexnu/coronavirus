@@ -12,7 +12,7 @@ Then we go to Airflow UI at http://localhost:8080 and switch on `coronavirus-ana
 ![Airflow-UI](airflow-ui.png)
 
 Once the DAG is complete, we can open Turnilo at http://localhost:9090 to view and create plots with our freshly crunched data:
-
+http://localhost:3000/public/dashboard/38b4cca5-8b70-4ba1-a37c-b09115939aa1
 ![Turnilo](turnilo.png)
 
 ## Overview
