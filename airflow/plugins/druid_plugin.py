@@ -7,8 +7,8 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 
-# Will show up under airflow.operators.druid_plugin.EnhancedDruidOperator
-class EnhancedDruidOperator(BaseOperator):
+# Will show up under airflow.operators.druid_plugin.DruidOperator
+class DruidOperator(BaseOperator):
     """
     Allows to submit a task directly to druid
     :param json_index_file: The filepath to the druid index specification
@@ -27,7 +27,7 @@ class EnhancedDruidOperator(BaseOperator):
                  max_ingestion_time=None,
                  *args,
                  **kwargs):
-        super(EnhancedDruidOperator, self).__init__(*args, **kwargs)
+        super(DruidOperator, self).__init__(*args, **kwargs)
         self.json_index_file = json_index_file
         self.druid_ingest_conn_id = druid_ingest_conn_id
         self.max_ingestion_time = max_ingestion_time
@@ -44,4 +44,4 @@ class EnhancedDruidOperator(BaseOperator):
 # Defining the plugin class
 class DruidPlugin(AirflowPlugin):
     name = "druid_plugin"
-    operators = [EnhancedDruidOperator]
+    operators = [DruidOperator]

@@ -22,6 +22,7 @@ services:
     restart: always
     depends_on:
       - postgres
+      - druid
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
@@ -33,6 +34,7 @@ services:
       - ./airflow/dags:/usr/local/airflow/dags
       - ./airflow/plugins:/usr/local/airflow/plugins
       - ./.filesystem:/tmp/filesystem
+      - ./spark/target/scala-2.11/coronavirus-spark_2.11-1.0.jar:/usr/local/airflow/deps/spark.jar
     ports:
       - "8080:8080"
     command: webserver
@@ -47,6 +49,8 @@ services:
       context: ./druid
       args:
         DRUID_VERSION: 0.17.1
+    depends_on:
+      - postgres
     volumes:
       - druid-storage:/var/druid/segments
       - ./.filesystem:/tmp/filesystem
@@ -55,6 +59,8 @@ services:
 
   metabase:
     image: metabase/metabase
+    depends_on:
+      - druid
     volumes:
       - ./metabase:/metabase-data
     environment:
