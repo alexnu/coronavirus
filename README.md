@@ -7,9 +7,9 @@ First, we need to start all services (this may take a while for the images to do
 $ docker-compose up
 ```
 
-Then we go to Airflow UI at http://localhost:8080 and switch on `coronavirus-analytics` DAG:
+Then we can go to Airflow UI at http://localhost:8080 and switch on `coronavirus` DAG:
 
-![Airflow-UI](airflow-ui.png)
+![Airflow-UI](airflow.png)
 
 Once the DAG is complete, we can see our dashboard [here](http://localhost:3000/public/dashboard/38b4cca5-8b70-4ba1-a37c-b09115939aa1):
 
