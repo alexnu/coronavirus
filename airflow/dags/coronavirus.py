@@ -14,8 +14,8 @@ default_args = {
 dag = DAG(
     'coronavirus',
     default_args=default_args,
-    description='A simple tutorial DAG',
-    schedule_interval='@daily',
+    schedule_interval='0 */3 * * *',
+    catchup=False
 )
 
 spark_command = """
