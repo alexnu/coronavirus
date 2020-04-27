@@ -1,5 +1,12 @@
 version: '3.7'
 
+x-logging:
+  &default-logging
+  options:
+    max-size: '10m'
+    max-file: '3'
+  driver: json-file
+
 volumes:
   database: {}
   storage: {}
@@ -8,6 +15,7 @@ volumes:
 services:
   postgres:
     image: postgres:9.6
+    restart: always
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -15,6 +23,7 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - database:/var/lib/postgresql/data/pgdata
+    logging: *default-logging
 
   airflow:
     build:
@@ -41,20 +50,24 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+    logging: *default-logging
 
   druid:
     build:
       context: ./druid
       args:
         DRUID_VERSION: 0.17.1
+    restart: always
     depends_on:
       - postgres
     volumes:
       - storage:/var/druid/segments
       - filesystem:/tmp/filesystem
+    logging: *default-logging
 
   metabase:
     image: metabase/metabase
+    restart: always
     depends_on:
       - druid
     volumes:
@@ -62,10 +75,13 @@ services:
     environment:
       - JAVA_TOOL_OPTIONS=-Xmx512m
       - MB_DB_FILE=/metabase-data/metabase.db
+    logging: *default-logging
 
   nginx:
     build: ./nginx
+    restart: always
     depends_on:
       - metabase
     ports:
       - "80:80"
+    logging: *default-logging
