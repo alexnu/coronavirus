@@ -89,4 +89,5 @@ services:
       - AMPLIFY_IMAGENAME=coronavirus-dashboard
     ports:
       - "80:80"
+      - "443:443"
     logging: *default-logging
