@@ -1,0 +1,42 @@
+version: '3.8'
+
+x-logrotate: &logrotate
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+services:
+  postgres:
+    restart: always
+    logging: *logrotate
+
+  airflow:
+    image: alexnu/coronavirus:airflow-1
+    restart: always
+    logging: *logrotate
+
+  airflowgc:
+    image: alexnu/coronavirus:airflow-1
+    restart: always
+    environment:
+      - AIRFLOW__LOG_RETENTION_DAYS=30
+    volumes:
+      - airflow-logs:/opt/airflow/logs
+    command: ["bash", "-c", "/clean-logs"]
+    logging: *logrotate
+
+  druid:
+    image: alexnu/coronavirus:druid-1
+    restart: always
+    logging: *logrotate
+
+  metabase:
+    image: alexnu/coronavirus:metabase-1
+    restart: always
+    logging: *logrotate
+
+  web:
+    image: alexnu/coronavirus:nginx-1
+    restart: always
+    logging: *logrotate

@@ -1,23 +1,23 @@
 # Coronavirus Dashboard
 A simple analytics pipeline for SARS-CoV-2, built with [Airflow](https://github.com/apache/airflow), [Spark](https://github.com/apache/spark), [Druid](https://github.com/apache/druid) and [Metabase](https://github.com/metabase/metabase), powered by Johns Hopkins [dataset](https://github.com/CSSEGISandData/COVID-19).
 
-Live demo: http://coronavirus19.ddns.net
+Live demo: http://nubase.tk
 
 ## Usage
-First, we need to start all services (this may take a while for the images to download the first time). Be sure to increase memory available to docker (6GB should be enough).
+First, we need to start all services (this may take a while for the images to build for the first time). Be sure to increase memory available to docker (6GB should be enough).
 ```shell script
 $ docker-compose up
 ```
 
-Then we can go to Airflow UI at http://localhost:8080 and switch on `coronavirus` DAG:
+Then we can go to Airflow UI at http://localhost:8080 and monitor `coronavirus` DAG:
 
 ![Airflow-UI](airflow.png)
 
-Once the DAG is complete, we can see our dashboard [here](http://localhost:3000/public/dashboard/38b4cca5-8b70-4ba1-a37c-b09115939aa1):
+Once the DAG is complete, we can see our dashboard here http://localhost:
 
 ![Metabase dashboard](metabase.png)
 
-Or go to http://localhost:3000 to create and edit new plots with our freshly crunched data:
+Or go to Metabase at http://localhost:3000 to create and edit new plots with our freshly crunched data:
 
 - Email: `admin@admin.com`
 - Password: `qwerty123`
