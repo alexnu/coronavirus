@@ -5,7 +5,7 @@ ARG DRUID_VERSION=0.17.1
 # Get Druid
 RUN mkdir -p /tmp \
     && cd /tmp/ \
-    && curl -fsLS "https://downloads.apache.org/druid/$DRUID_VERSION/apache-druid-$DRUID_VERSION-bin.tar.gz" | tar xvz \
+    && curl -fsLS "https://archive.apache.org/dist/druid/$DRUID_VERSION/apache-druid-$DRUID_VERSION-bin.tar.gz" | tar xvz \
     && mv apache-druid-$DRUID_VERSION /opt/druid
 
 WORKDIR /opt/druid/
