@@ -31,4 +31,4 @@ jobs:
           context: ./web
           file: ./web/Dockerfile
           push: true
-          tags: alexnu/coronavirus:nginx-$SHA8
+          tags: alexnu/coronavirus:nginx-2
