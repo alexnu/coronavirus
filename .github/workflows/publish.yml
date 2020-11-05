@@ -10,6 +10,7 @@ jobs:
     env:
       SHA8: ${GITHUB_SHA::8}
     steps:
+      - uses: actions/checkout@v2
       - run: cd web
       - run: cat ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - run: docker build -t alexnu/coronavirus:nginx-$SHA8 .
