@@ -7,11 +7,17 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
-    env:
-      SHA8: ${GITHUB_SHA::8}
     steps:
-      - uses: actions/checkout@v2
-      - run: cd web
       - run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - uses: actions/checkout@v2
+      - name: get shortsha
+        id: vars
+        run: |
+          echo ::set-output name=sha_short::$(git rev-parse --short=4 ${{ github.sha }})
+      - run: cd web
       - run: docker build -t alexnu/coronavirus:nginx-$SHA8 .
+        env:
+          SHA8: ${{ steps.vars.outputs.sha_short }}
       - run: docker push alexnu/coronavirus:nginx-$SHA8
+        env:
+          SHA8: ${{ steps.vars.outputs.sha_short }}
