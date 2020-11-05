@@ -36,4 +36,4 @@ jobs:
           context: ./web
           file: ./web/Dockerfile
           push: true
-          tags: ${{ steps.docker_meta.outputs.tags }}
+          tags: alexnu/coronavirus-nginx:${{ steps.vars.outputs.sha_short }}
