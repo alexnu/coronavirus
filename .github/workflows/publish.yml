@@ -25,8 +25,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v2
-        env:
-          SHA8: ${{ steps.vars.outputs.sha_short }}
+        id: docker_build
         with:
           context: ./web
           file: ./web/Dockerfile
