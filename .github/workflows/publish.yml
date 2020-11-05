@@ -22,11 +22,31 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish Airflow
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: alexnu/coronavirus-airflow:${{ steps.vars.outputs.sha_short }}
       - name: Publish Nginx
         uses: docker/build-push-action@v2
-        id: docker_build
         with:
           context: ./web
           file: ./web/Dockerfile
           push: true
           tags: alexnu/coronavirus-nginx:${{ steps.vars.outputs.sha_short }}
+      - name: Publish Druid
+        uses: docker/build-push-action@v2
+        with:
+          context: ./druid
+          file: ./druid/Dockerfile
+          push: true
+          tags: alexnu/coronavirus-druid:${{ steps.vars.outputs.sha_short }}
+      - name: Publish Metabase
+        uses: docker/build-push-action@v2
+        with:
+          context: ./metabase
+          file: ./metabase/Dockerfile
+          push: true
+          tags: alexnu/coronavirus-metabase:${{ steps.vars.outputs.sha_short }}
