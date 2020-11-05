@@ -15,4 +15,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: alexnu/coronavirus:airflow-2
+          repository: alexnu/coronavirus
+          tags: airflow-2
