@@ -1,0 +1,61 @@
+name: Publish Docker images
+on:
+  push:
+    branches:
+      - master
+jobs:
+  push_airflow:
+    name: Airflow image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: alexnu/coronavirus
+          tags: airflow-${GITHUB_SHA::8}
+  push_druid:
+    name: Druid image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          context: druid
+          repository: alexnu/coronavirus
+          tags: druid-${GITHUB_SHA::8}
+  push_metabase:
+    name: Metabase image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          context: metabase
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: alexnu/coronavirus
+          tags: metabase-${GITHUB_SHA::8}
+  push_web:
+    name: Web image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          context: web
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: alexnu/coronavirus
+          tags: nginx-${GITHUB_SHA::8}
