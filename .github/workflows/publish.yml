@@ -17,10 +17,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Publish druid
+      - name: Publish web
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: druid
-          tags: alexnu/coronavirus:druid-4
+          context: ./web
+          tags: alexnu/coronavirus:web-4
           push: true
