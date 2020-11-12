@@ -25,51 +25,72 @@ class CoronavirusQuery(spark: SparkSession) {
 
     df_expanded.select(
       $"Province/State".as("province_state"),
-      $"Country/Region".as("country_region"),
+      $"Country/Region".as("country"),
       to_date($"date_str", "MM/dd/yy").as("date"),
       selectCol($"date_str", array(df_expanded_colNames.map(i => col(i)): _*)).as(newColName)
     )
+      .groupBy("date", "country")
+      .agg(sum(newColName).as(newColName))
   }
 
-  def run(confirmed: DataFrame, deaths: DataFrame): DataFrame = {
-    val confirmed_unpivot = unpivot(confirmed, "confirmed_cum")
-    val deaths_unpivot = unpivot(deaths, "deaths_cum")
+  def run(confirmed: DataFrame, deaths: DataFrame, population: DataFrame): DataFrame = {
+    val confirmedUnpivot = unpivot(confirmed, "confirmed_cum")
+    val deathsUnpivot = unpivot(deaths, "deaths_cum")
 
-    val windowSpec = Window
-      .partitionBy("country_region", "province_state")
+    val prevDay = Window
+      .partitionBy("country")
       .orderBy("date")
 
-    confirmed_unpivot.as("cu")
-      .join(deaths_unpivot.as("du"),
+    val lastWeek = Window
+      .partitionBy("country")
+      .orderBy("date")
+      .rowsBetween(-6, 0)
+
+    confirmedUnpivot.as("cu")
+      .join(deathsUnpivot.as("du"),
         $"cu.date" === $"du.date" &&
-          $"cu.country_region" === $"du.country_region" &&
-          $"cu.province_state" <=> $"du.province_state"
+          $"cu.country" === $"du.country"
+      )
+      .join(population.as("po"),
+        $"cu.country" === $"po.Combined_Key"
       )
       .select(
         $"cu.date",
-        $"cu.country_region",
-        $"cu.province_state",
+        $"cu.country",
         $"cu.confirmed_cum",
-        $"du.deaths_cum"
+        $"du.deaths_cum",
+        $"po.Population".as("population")
       )
       .withColumn("confirmed_prev", coalesce(
-        lag("confirmed_cum", 1).over(windowSpec),
+        lag("confirmed_cum", 1).over(prevDay),
         lit(0)
       ))
       .withColumn("deaths_prev", coalesce(
-        lag("deaths_cum", 1).over(windowSpec),
+        lag("deaths_cum", 1).over(prevDay),
         lit(0)
       ))
-      .withColumn("confirmed", $"confirmed_cum".minus($"confirmed_prev"))
+      .withColumn("cases", $"confirmed_cum".minus($"confirmed_prev"))
       .withColumn("deaths", $"deaths_cum".minus($"deaths_prev"))
+      .withColumn("cases_7d", round(avg("cases").over(lastWeek)))
+      .withColumn("deaths_7d", round(avg("deaths").over(lastWeek)))
+      .withColumn("cases_per_mil", round($"cases".multiply(lit(1000000)).divide($"population")))
+      .withColumn("deaths_per_mil", round($"deaths".multiply(lit(1000000)).divide($"population")))
+      .withColumn("cases_7d_per_mil", round($"cases_7d".multiply(lit(1000000)).divide($"population")))
+      .withColumn("deaths_7d_per_mil", round($"deaths_7d".multiply(lit(1000000)).divide($"population")))
       .select(
         $"date",
-        $"country_region",
-        $"province_state",
-        $"confirmed",
-        $"deaths"
+        $"country",
+        $"cases",
+        $"deaths",
+        $"cases_7d",
+        $"deaths_7d",
+        $"cases_per_mil",
+        $"deaths_per_mil",
+        $"cases_7d_per_mil",
+        $"deaths_7d_per_mil",
+        $"population"
       )
-      .orderBy("date", "country_region", "province_state")
+      .orderBy("date", "country")
   }
 
 }

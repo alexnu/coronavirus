@@ -9,8 +9,8 @@ import scala.io.Source._
 object CoronavirusJob {
 
   def main(args: Array[String]) {
-    if (args.length != 3) {
-      System.err.println("Usage: CoronavirusJob <confirmed_url> <deaths_url> <output_path>")
+    if (args.length != 4) {
+      System.err.println("Usage: CoronavirusJob <confirmed_url> <deaths_url> <population_url> <output_path>")
       System.exit(1)
     }
 
@@ -21,16 +21,19 @@ object CoronavirusJob {
 
     val confirmedUrl = args(0)
     val deathsUrl = args(1)
-    val outputPath = args(2)
+    val populationUrl = args(2)
+    val outputPath = args(3)
 
     val confirmedSource: BufferedSource = fromURL(confirmedUrl)
     val deathsSource: BufferedSource = fromURL(deathsUrl)
+    val populationSource: BufferedSource = fromURL(populationUrl)
 
     val confirmedDf = readCsvFromSource(spark, confirmedSource)
     val deathsDf = readCsvFromSource(spark, deathsSource)
+    val populationDf = readCsvFromSource(spark, populationSource)
 
     new CoronavirusQuery(spark)
-      .run(confirmedDf, deathsDf)
+      .run(confirmedDf, deathsDf, populationDf)
       .write
       .mode(SaveMode.Overwrite)
       .option("header", value = true)

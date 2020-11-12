@@ -8,20 +8,49 @@
       },
       "dimensionsSpec": {
         "dimensions": [
-          "country_region",
-          "province_state"
+          "country"
         ]
       },
       "metricsSpec": [
         {
           "type": "longSum",
-          "name": "confirmed",
-          "fieldName": "confirmed"
+          "name": "cases",
+          "fieldName": "cases"
         },
         {
           "type": "longSum",
           "name": "deaths",
           "fieldName": "deaths"
+        },
+        {
+          "type": "longSum",
+          "name": "cases_7d",
+          "fieldName": "cases_7d"
+        },
+        {
+          "type": "longSum",
+          "name": "deaths_7d",
+          "fieldName": "deaths_7d"
+        },
+        {
+          "type": "longSum",
+          "name": "cases_per_mil",
+          "fieldName": "cases_per_mil"
+        },
+        {
+          "type": "longSum",
+          "name": "deaths_per_mil",
+          "fieldName": "deaths_per_mil"
+        },
+        {
+          "type": "longSum",
+          "name": "cases_7d_per_mil",
+          "fieldName": "cases_7d_per_mil"
+        },
+        {
+          "type": "longSum",
+          "name": "deaths_7d_per_mil",
+          "fieldName": "deaths_7d_per_mil"
         }
       ],
       "granularitySpec": {

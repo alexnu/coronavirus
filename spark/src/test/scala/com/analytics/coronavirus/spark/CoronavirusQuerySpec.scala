@@ -14,8 +14,7 @@ class CoronavirusQuerySpec extends FunSuite with DataFrameSuiteBase {
   val resultSchema = StructType(
     List(
       StructField("date", DateType, nullable = true),
-      StructField("country_region", StringType, nullable = true),
-      StructField("province_state", StringType, nullable = true),
+      StructField("country", StringType, nullable = true),
       StructField("confirmed", DoubleType, nullable = true),
       StructField("deaths", DoubleType, nullable = true)
     )
@@ -24,14 +23,17 @@ class CoronavirusQuerySpec extends FunSuite with DataFrameSuiteBase {
   test("Coronavirus query result is correct") {
     val confirmedSource: BufferedSource = fromFile("src/test/resources/fixtures/confirmed.csv")
     val deathsSource: BufferedSource = fromFile("src/test/resources/fixtures/deaths.csv")
+    val populationSource: BufferedSource = fromFile("src/test/resources/fixtures/population.csv")
     val expectedSource: BufferedSource = fromFile("src/test/resources/fixtures/expected.csv")
 
     val confirmed = readCsvFromSource(spark, confirmedSource)
     val deaths = readCsvFromSource(spark, deathsSource)
+    val population = readCsvFromSource(spark, populationSource)
     val expected = readCsvFromSource(spark, expectedSource)
     val expectedCast = expected.withColumn("date", expected("date").cast(DateType))
 
-    val actual = new CoronavirusQuery(spark).run(confirmed, deaths)
+    val actual = new CoronavirusQuery(spark).run(confirmed, deaths, population)
+    actual.show(50)
     assertDataFrameEquals(actual, expectedCast)
   }
 
