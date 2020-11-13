@@ -4,7 +4,8 @@
     "dataSchema": {
       "dataSource": "covid",
       "timestampSpec": {
-        "column": "date"
+        "column": "date",
+        "format": "iso"
       },
       "dimensionsSpec": {
         "dimensions": [
@@ -23,34 +24,49 @@
           "fieldName": "deaths"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "cases_7d",
           "fieldName": "cases_7d"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "deaths_7d",
           "fieldName": "deaths_7d"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "cases_per_mil",
           "fieldName": "cases_per_mil"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "deaths_per_mil",
           "fieldName": "deaths_per_mil"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "cases_7d_per_mil",
           "fieldName": "cases_7d_per_mil"
         },
         {
-          "type": "longSum",
+          "type": "doubleSum",
           "name": "deaths_7d_per_mil",
           "fieldName": "deaths_7d_per_mil"
+        },
+        {
+          "type": "doubleSum",
+          "name": "cases_7d_per_mil_inc",
+          "fieldName": "cases_7d_per_mil_inc"
+        },
+        {
+          "type": "doubleSum",
+          "name": "deaths_7d_per_mil_inc",
+          "fieldName": "deaths_7d_per_mil_inc"
+        },
+        {
+          "type": "longSum",
+          "name": "population",
+          "fieldName": "population"
         }
       ],
       "granularitySpec": {

@@ -10,15 +10,22 @@ import scala.io.Source._
 
 class CoronavirusQuerySpec extends FunSuite with DataFrameSuiteBase {
 
-  // this is needed so that order and types do not get messed up
-  val resultSchema = StructType(
-    List(
-      StructField("date", DateType, nullable = true),
+  val schema: StructType = StructType(
+    Seq(
+      StructField("date", TimestampType, nullable = true),
       StructField("country", StringType, nullable = true),
-      StructField("confirmed", DoubleType, nullable = true),
-      StructField("deaths", DoubleType, nullable = true)
-    )
-  )
+      StructField("cases", DoubleType, nullable = true),
+      StructField("deaths", DoubleType, nullable = true),
+      StructField("cases_7d", DoubleType, nullable = true),
+      StructField("deaths_7d", DoubleType, nullable = true),
+      StructField("cases_per_mil", DoubleType, nullable = true),
+      StructField("deaths_per_mil", DoubleType, nullable = true),
+      StructField("cases_7d_per_mil", DoubleType, nullable = true),
+      StructField("deaths_7d_per_mil", DoubleType, nullable = true),
+      StructField("cases_7d_per_mil_inc", DoubleType, nullable = false),
+      StructField("deaths_7d_per_mil_inc", DoubleType, nullable = false),
+      StructField("population", IntegerType, nullable = true)
+    ))
 
   test("Coronavirus query result is correct") {
     val confirmedSource: BufferedSource = fromFile("src/test/resources/fixtures/confirmed.csv")
@@ -30,10 +37,9 @@ class CoronavirusQuerySpec extends FunSuite with DataFrameSuiteBase {
     val deaths = readCsvFromSource(spark, deathsSource)
     val population = readCsvFromSource(spark, populationSource)
     val expected = readCsvFromSource(spark, expectedSource)
-    val expectedCast = expected.withColumn("date", expected("date").cast(DateType))
+    val expectedCast = spark.createDataFrame(expected.rdd, schema)
 
     val actual = new CoronavirusQuery(spark).run(confirmed, deaths, population)
-    actual.show(50)
     assertDataFrameEquals(actual, expectedCast)
   }
 

@@ -26,7 +26,7 @@ class CoronavirusQuery(spark: SparkSession) {
     df_expanded.select(
       $"Province/State".as("province_state"),
       $"Country/Region".as("country"),
-      to_date($"date_str", "MM/dd/yy").as("date"),
+      to_timestamp($"date_str", "MM/dd/yy").as("date"),
       selectCol($"date_str", array(df_expanded_colNames.map(i => col(i)): _*)).as(newColName)
     )
       .groupBy("date", "country")
@@ -37,14 +37,11 @@ class CoronavirusQuery(spark: SparkSession) {
     val confirmedUnpivot = unpivot(confirmed, "confirmed_cum")
     val deathsUnpivot = unpivot(deaths, "deaths_cum")
 
-    val prevDay = Window
+    val countryWindow = Window
       .partitionBy("country")
       .orderBy("date")
 
-    val lastWeek = Window
-      .partitionBy("country")
-      .orderBy("date")
-      .rowsBetween(-6, 0)
+    val lastWeek = countryWindow.rowsBetween(-6, 0)
 
     confirmedUnpivot.as("cu")
       .join(deathsUnpivot.as("du"),
@@ -62,21 +59,37 @@ class CoronavirusQuery(spark: SparkSession) {
         $"po.Population".as("population")
       )
       .withColumn("confirmed_prev", coalesce(
-        lag("confirmed_cum", 1).over(prevDay),
+        lag("confirmed_cum", 1).over(countryWindow),
         lit(0)
       ))
       .withColumn("deaths_prev", coalesce(
-        lag("deaths_cum", 1).over(prevDay),
+        lag("deaths_cum", 1).over(countryWindow),
         lit(0)
       ))
-      .withColumn("cases", $"confirmed_cum".minus($"confirmed_prev"))
-      .withColumn("deaths", $"deaths_cum".minus($"deaths_prev"))
-      .withColumn("cases_7d", round(avg("cases").over(lastWeek)))
-      .withColumn("deaths_7d", round(avg("deaths").over(lastWeek)))
-      .withColumn("cases_per_mil", round($"cases".multiply(lit(1000000)).divide($"population")))
-      .withColumn("deaths_per_mil", round($"deaths".multiply(lit(1000000)).divide($"population")))
-      .withColumn("cases_7d_per_mil", round($"cases_7d".multiply(lit(1000000)).divide($"population")))
-      .withColumn("deaths_7d_per_mil", round($"deaths_7d".multiply(lit(1000000)).divide($"population")))
+      .withColumn("cases", $"confirmed_cum" -$"confirmed_prev")
+      .withColumn("deaths", $"deaths_cum" - $"deaths_prev")
+      .withColumn("cases_7d", round(avg("cases").over(lastWeek), 2))
+      .withColumn("deaths_7d", round(avg("deaths").over(lastWeek), 2))
+      .withColumn("cases_per_mil", round($"cases" * lit(1000000) / $"population", 2))
+      .withColumn("deaths_per_mil", round($"deaths" * lit(1000000) / $"population", 2))
+      .withColumn("cases_7d_per_mil", round($"cases_7d" * lit(1000000) / $"population", 2))
+      .withColumn("deaths_7d_per_mil", round($"deaths_7d" * lit(1000000) / $"population", 2))
+      .withColumn("cases_7d_per_mil_prev", coalesce(
+        lag("cases_7d_per_mil", 7).over(countryWindow),
+        lit(0)
+      ))
+      .withColumn("deaths_7d_per_mil_prev", coalesce(
+        lag("deaths_7d_per_mil", 7).over(countryWindow),
+        lit(0)
+      ))
+      .withColumn("cases_7d_per_mil_inc", coalesce(
+        round(($"cases_7d_per_mil" - $"cases_7d_per_mil_prev") / $"cases_7d_per_mil_prev", 2),
+        lit(0)
+      ))
+      .withColumn("deaths_7d_per_mil_inc", coalesce(
+        round(($"deaths_7d_per_mil" - $"deaths_7d_per_mil_prev") / $"deaths_7d_per_mil_prev", 2),
+        lit(0)
+      ))
       .select(
         $"date",
         $"country",
@@ -88,6 +101,8 @@ class CoronavirusQuery(spark: SparkSession) {
         $"deaths_per_mil",
         $"cases_7d_per_mil",
         $"deaths_7d_per_mil",
+        $"cases_7d_per_mil_inc",
+        $"deaths_7d_per_mil_inc",
         $"population"
       )
       .orderBy("date", "country")
