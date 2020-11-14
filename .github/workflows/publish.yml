@@ -32,8 +32,8 @@ jobs:
       - name: Publish Nginx
         uses: docker/build-push-action@v2
         with:
-          context: ./web
-          file: ./web/Dockerfile
+          context: ./nginx
+          file: ./nginx/Dockerfile.production
           push: true
           tags: alexnu/coronavirus-nginx:${{ steps.vars.outputs.sha_short }}
       - name: Publish Druid
