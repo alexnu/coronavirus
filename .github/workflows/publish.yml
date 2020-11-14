@@ -34,6 +34,9 @@ jobs:
         with:
           context: ./nginx
           file: ./nginx/Dockerfile.production
+          build-args: |
+            SSL_CERT=${{ secrets.SSL_CERT }}
+            SSL_CERT_KEY=${{ secrets.SSL_CERT_KEY }}
           push: true
           tags: alexnu/coronavirus-nginx:${{ steps.vars.outputs.sha_short }}
       - name: Publish Druid

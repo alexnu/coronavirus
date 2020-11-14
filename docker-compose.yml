@@ -56,7 +56,7 @@ services:
     ports:
       - "3000:3000"
 
-  web:
+  nginx:
     depends_on:
       - metabase
     ports:

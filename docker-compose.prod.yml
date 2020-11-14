@@ -12,12 +12,12 @@ services:
     logging: *logrotate
 
   airflow:
-    image: alexnu/coronavirus:airflow-1
+    image: alexnu/coronavirus-airflow:$VERSION
     restart: always
     logging: *logrotate
 
   airflowgc:
-    image: alexnu/coronavirus:airflow-1
+    image: alexnu/coronavirus-airflow:$VERSION
     restart: always
     environment:
       - AIRFLOW__LOG_RETENTION_DAYS=30
@@ -27,16 +27,18 @@ services:
     logging: *logrotate
 
   druid:
-    image: alexnu/coronavirus:druid-1
+    image: alexnu/coronavirus-druid:$VERSION
     restart: always
     logging: *logrotate
 
   metabase:
-    image: alexnu/coronavirus:metabase-1
+    image: alexnu/coronavirus-metabase:$VERSION
     restart: always
     logging: *logrotate
 
-  web:
-    image: alexnu/coronavirus:nginx-1
+  nginx:
+    image: alexnu/coronavirus-nginx:$VERSION
     restart: always
+    ports:
+      - "443:443"
     logging: *logrotate
