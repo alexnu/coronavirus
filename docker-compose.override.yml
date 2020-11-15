@@ -16,8 +16,6 @@ services:
       - ./metabase:/metabase-data
 
   nginx:
-    build:
-      context: nginx
-      dockerfile: Dockerfile.production
+    build: nginx
     volumes:
-      - ./web/public:/usr/share/nginx/html
+      - ./nginx/public:/usr/share/nginx/html

@@ -39,6 +39,8 @@ services:
   nginx:
     image: alexnu/coronavirus-nginx:$VERSION
     restart: always
+    environment:
+      - PASSPHRASE=$PASSPHRASE
     ports:
       - "443:443"
     logging: *logrotate

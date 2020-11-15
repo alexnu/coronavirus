@@ -39,8 +39,6 @@ services:
     command: bash -c 'airflow initdb && { airflow scheduler & airflow webserver ; }'
 
   druid:
-    depends_on:
-      - postgres
     volumes:
       - druid-segments:/var/druid/segments
       - filesystem:/tmp/filesystem
