@@ -1,7 +1,7 @@
 # Coronavirus Dashboard
 A simple analytics pipeline for SARS-CoV-2, built with [Airflow](https://github.com/apache/airflow), [Spark](https://github.com/apache/spark), [Druid](https://github.com/apache/druid) and [Metabase](https://github.com/metabase/metabase), powered by Johns Hopkins [dataset](https://github.com/CSSEGISandData/COVID-19).
 
-Live demo: http://nubase.tk
+Live demo: https://coronavirus.nubase.tk
 
 ## Usage
 First, we need to start all services (this may take a while for the images to build for the first time). Be sure to increase memory available to docker (6GB should be enough).
@@ -45,7 +45,7 @@ So what happened here? We just run a small but complete analytics pipeline on ou
 2. Transforming it to a suitable format using Spark,
 3. And ingesting it into Druid, a high performance analytics data store.
 
-All the above steps were coordinated by Airflow, a workflow scheduler. So when we started `coronavirus` DAG, it executed the above steps and it will continue doing so every 3 hours, in order to fetch latest changes to the dataset.
+All the above steps were coordinated by Airflow, a workflow scheduler. So when we started `coronavirus` DAG, it executed the above steps and it will continue doing so every 12 hours, in order to fetch latest changes to the dataset.
 
 Lastly, we used Metabase, a powerful business intelligence platform, to query our data and create different visualizations.
 

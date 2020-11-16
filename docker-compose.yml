@@ -2,7 +2,7 @@ version: '3.8'
 
 volumes:
   airflow-logs: {}
-  druid-segments: {}
+  druid-state: {}
   filesystem: {}
   postgres-data: {}
 
@@ -40,7 +40,7 @@ services:
 
   druid:
     volumes:
-      - druid-segments:/var/druid/segments
+      - druid-state:/opt/druid/var/druid
       - filesystem:/tmp/filesystem
     ports:
       - "8888:8888"
