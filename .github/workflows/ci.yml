@@ -5,7 +5,7 @@ on:
     branches: master
 
 jobs:
-  main:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,3 +53,11 @@ jobs:
           file: ./metabase/Dockerfile
           push: true
           tags: alexnu/coronavirus-metabase:${{ steps.vars.outputs.sha_short }}
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          sudo chmod 600 ~/.ssh/deploy_key
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}

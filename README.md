@@ -45,7 +45,7 @@ So what happened here? We just run a small but complete analytics pipeline on ou
 2. Transforming it to a suitable format using Spark,
 3. And ingesting it into Druid, a high performance analytics data store.
 
-All the above steps were coordinated by Airflow, a workflow scheduler. So when we started `coronavirus` DAG, it executed the above steps and it will continue doing so every 12 hours, in order to fetch latest changes to the dataset.
+All the above steps were coordinated by Airflow, a workflow scheduler. So when we started `coronavirus` DAG, it executed the above steps and it will continue doing so every 3 hours, in order to fetch latest changes to the dataset.
 
 Lastly, we used Metabase, a powerful business intelligence platform, to query our data and create different visualizations.
 
