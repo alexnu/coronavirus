@@ -22,7 +22,7 @@ Or go to Metabase at http://localhost:3000 to create and edit new plots with our
 - Email: `admin@admin.com`
 - Password: `qwerty123`
 
-## Troubleshooting
+## Troubleshooting 
 If Airflow is hanging or you are getting weird log messages from Druid:
 
 ```shell script
