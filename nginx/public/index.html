@@ -19,10 +19,20 @@
 </head>
 
 <body>
-<iframe
-        src="/metabase/public/dashboard/38b4cca5-8b70-4ba1-a37c-b09115939aa1"
-        frameborder="0"
-        allowtransparency
-></iframe>
+    <iframe id="metaFrame"
+            src="/metabase/public/dashboard/38b4cca5-8b70-4ba1-a37c-b09115939aa1"
+            frameborder="0"
+            allowtransparency
+    ></iframe>
+    <script type="text/javascript">
+        const frame = document.getElementById("metaFrame");
+        frame.src = frame.src + window.location.search;
+        setInterval(function () {
+            const queryParams = document.getElementById("metaFrame").contentWindow.location.search;
+            if (window.location.search !== queryParams) {
+                window.history.pushState(null, null, queryParams);
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
