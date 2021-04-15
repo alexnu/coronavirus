@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8u275
 
 ARG DRUID_VERSION=0.17.1
 
