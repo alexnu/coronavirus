@@ -2,8 +2,10 @@ FROM nginx:1.19
 
 COPY production/nginx.prod.conf /etc/nginx/conf.d/default.conf
 COPY public /usr/share/nginx/html
-COPY production/fullchain.pem.gpg /etc/nginx/certs/fullchain.pem.gpg
-COPY production/privkey.pem.gpg /etc/nginx/certs/privkey.pem.gpg
+COPY production/coronavirus.fullchain.pem.gpg /etc/nginx/certs/coronavirus.fullchain.pem.gpg
+COPY production/coronavirus.privkey.pem.gpg /etc/nginx/certs/coronavirus.privkey.pem.gpg
+COPY production/buyormine.fullchain.pem.gpg /etc/nginx/certs/buyormine.fullchain.pem.gpg
+COPY production/buyormine.privkey.pem.gpg /etc/nginx/certs/buyormine.privkey.pem.gpg
 COPY production/extended-entrypoint.sh /
 
 RUN apt-get update \
